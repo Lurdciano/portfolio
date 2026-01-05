@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luciano Ruiz Diaz | Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            cyan: '#00F0FF',
+                            purple: '#7000FF',
+                            dark: '#050505',
+                            slate: '#0B1121',
+                            light: '#F0F5FA', // Fondo para modo claro
+                            textLight: '#1e293b' // Texto para modo claro
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 10s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- ESTILOS BASE --- */
+        body {
+            /* Transición suave para cambio de tema */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Cursor Personalizado (Solo Desktop) */
+        @media (min-width: 768px) {
+            body { cursor: none; }
+            #cursor, #cursor-follower {
+                position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%, -50%);
+            }
+            #cursor { width: 8px; height: 8px; background: #00F0FF; mix-blend-mode: difference; }
+            #cursor-follower { width: 40px; height: 40px; border: 1px solid rgba(0, 240, 255, 0.5); transition: 0.1s; mix-blend-mode: difference; }
+            body.hovering #cursor-follower { width: 60px; height: 60px; background: rgba(0, 240, 255, 0.1); border-color: #00F0FF; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        html:not(.dark) ::-webkit-scrollbar-track { background: #F0F5FA; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
+
+        /* Fondo de Grilla Animada (Original) */
+        .cyber-grid {
+            position: fixed;
+            inset: 0;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+            z-index: -2;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(2);
+            opacity: 0.2;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0) scale(2); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px) scale(2); }
+        }
+
+        /* Tarjeta Holográfica (Conserva el estilo original pero adaptable) */
+        .holo-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.7); /* Modo claro base */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        /* Modo Oscuro para tarjeta */
+        html.dark .holo-card {
+            background: rgba(11, 17, 33, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .holo-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+            transform: skewX(-25deg); transition: 0.5s; z-index: 1; pointer-events: none;
+        }
+        .holo-card:hover::before { left: 150%; transition: 0.7s; }
+
+        /* Utilitarios */
+        .text-gradient {
+            background: linear-gradient(135deg, #00F0FF 0%, #7000FF 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        
+        /* Preloader */
+        .loader-bar { width: 0%; height: 2px; background: #00F0FF; box-shadow: 0 0 10px #00F0FF; transition: width 0.2s; }
+    </style>
+</head>
+<body class="bg-cyber-light text-cyber-textLight dark:bg-cyber-dark dark:text-gray-200 antialiased selection:bg-cyber-cyan selection:text-black">
+
+    <div id="cursor" class="hidden md:block"></div>
+    <div id="cursor-follower" class="hidden md:block"></div>
+
+    <div class="cyber-grid opacity-20 dark:opacity-30"></div>
+    <div id="particles-js" class="fixed inset-0 z-[-1] opacity-40 pointer-events-none"></div>
+
+    <div id="preloader" class="fixed inset-0 z-[100] bg-cyber-dark flex flex-col items-center justify-center text-white">
+        <div class="font-mono text-cyber-cyan text-sm mb-2 tracking-widest">INICIANDO SISTEMA...</div>
+        <div class="w-64 h-[2px] bg-gray-800 rounded-full overflow-hidden">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+        <div class="mt-2 font-mono text-xs text-gray-500" id="loader-text">0%</div>
+    </div>
+
+    <div class="fixed top-0 left-0 w-full p-4 flex justify-between items-start z-50 pointer-events-none mix-blend-difference text-white">
+        <div class="font-display font-bold text-xl tracking-tighter pointer-events-auto cursor-pointer">
+            LG<span class="text-cyber-cyan">RD</span>
+        </div>
+        
+        <div class="pointer-events-auto flex gap-3">
+            <button onclick="toggleLanguage()" class="group flex items-center gap-2 font-mono text-[10px] md:text-xs border border-white/20 bg-black/20 backdrop-blur px-3 py-1 rounded hover:bg-cyber-cyan hover:text-black transition-all">
+                <i class="fas fa-globe"></i> <span id="lang-indicator">ES</span>
+            </button>
+            <button onclick="toggleTheme()" class="group flex items-center gap-2 font-mono text-[10px] md:text-xs border border-white/20 bg-black/20 backdrop-blur px-3 py-1 rounded hover:bg-white hover:text-black transition-all">
+                <i class="fas fa-sun" id="theme-icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/80 dark:bg-cyber-slate/80 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-full px-6 py-3 shadow-[0_0_20px_rgba(0,0,0,0.2)] flex gap-6 md:gap-8 items-center transform transition-all hover:scale-105 hover:border-cyber-cyan/30">
+        <a href="#hero" class="text-gray-500 dark:text-gray-400 hover:text-cyber-cyan transition-colors text-lg"><i class="fas fa-home"></i></a>
+        <a href="#about" class="text-gray-500 dark:text-gray-400 hover:text-cyber-cyan transition-colors text-lg"><i class="fas fa-user-astronaut"></i></a>
+        <a href="#certificates" class="text-gray-500 dark:text-gray-400 hover:text-cyber-cyan transition-colors text-lg"><i class="fas fa-certificate"></i></a>
+        <a href="#education" class="text-gray-500 dark:text-gray-400 hover:text-cyber-cyan transition-colors text-lg"><i class="fas fa-graduation-cap"></i></a>
+        <a href="#projects" class="text-gray-500 dark:text-gray-400 hover:text-cyber-cyan transition-colors text-lg"><i class="fas fa-code-branch"></i></a>
+        <a href="#contact" class="text-gray-500 dark:text-gray-400 hover:text-cyber-cyan transition-colors text-lg"><i class="fas fa-envelope"></i></a>
+    </nav>
+
+    <main>
+        
+        <section id="hero" class="min-h-screen flex items-center relative overflow-hidden px-6 pt-20">
+            <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div class="order-2 lg:order-1">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-cyber-cyan/30 bg-cyber-cyan/5 text-cyber-cyan font-mono text-xs mb-6 fade-in-up">
+                        <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+                        <span class="lang-text" data-es="DISPONIBLE" data-en="ONLINE">DISPONIBLE</span>
+                    </div>
+
+                    <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight mb-4 text-slate-900 dark:text-white fade-in-up">
+                        LUCIANO <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-cyber-purple">RUIZ DIAZ</span>
+                    </h1>
+                    
+                    <div class="h-16 mb-6 font-mono text-lg md:text-xl text-cyber-purple dark:text-cyber-cyan fade-in-up">
+                        > <span id="scramble-text"></span><span class="animate-blink">_</span>
+                    </div>
+
+                    <p class="text-gray-600 dark:text-gray-400 max-w-lg mb-8 leading-relaxed fade-in-up text-sm md:text-base border-l-2 border-cyber-purple pl-4 lang-text"
+                       data-es="Analista Funcional especializado en la arquitectura de soluciones escalables."
+                       data-en="Functional Analyst specialized in scalable solution architecture.">
+                        Analista Funcional con el objetivo de crear soluciones escalables.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4 fade-in-up">
+                        <a href="#projects" class="group relative px-6 py-3 bg-transparent overflow-hidden rounded-sm border border-slate-900 dark:border-cyber-cyan text-slate-900 dark:text-white font-mono text-sm tracking-wider uppercase transition-all hover:shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+                            <span class="absolute inset-0 w-full h-full bg-slate-900/10 dark:bg-cyber-cyan/10 group-hover:bg-slate-900/20 dark:group-hover:bg-cyber-cyan/20 transition-all"></span>
+                            <span class="relative flex items-center gap-2">
+                                <span class="lang-text" data-es="Explorar" data-en="Explore">Explorar</span> 
+                                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </span>
+                        </a>
+                        
+                        <a href="./assets/curriculumvitae.pdf" download class="group relative px-6 py-3 bg-slate-900 dark:bg-white overflow-hidden rounded-sm text-white dark:text-black font-mono text-sm tracking-wider uppercase transition-all hover:scale-105">
+                            <span class="relative flex items-center gap-2">
+                                <i class="fas fa-download"></i> 
+                                <span class="lang-text" data-es="Descargar CV" data-en="Download CV">Descargar CV</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2 flex justify-center perspective-container fade-in-up">
+                    <div class="tilt-card relative w-72 h-72 md:w-96 md:h-96 group">
+                        <div class="absolute inset-0 rounded-full border border-cyber-cyan/20 animate-[spin_10s_linear_infinite]"></div>
+                        <div class="absolute inset-4 rounded-full border border-dashed border-cyber-purple/40 animate-[spin_15s_linear_infinite_reverse]"></div>
+                        <div class="absolute inset-0 bg-cyber-slate clip-hexagon flex items-center justify-center overflow-hidden border-2 border-gray-800 transition-all duration-500 group-hover:border-cyber-cyan">
+                            <div class="absolute inset-0 bg-cyber-cyan/10 mix-blend-overlay z-10"></div>
+                            <img src="./assets/Avatar.png" alt="Avatar" class="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-24 relative">
+            <div class="container mx-auto px-6">
+                <div class="flex items-end gap-4 mb-16 border-b border-gray-300 dark:border-gray-800 pb-4">
+                    <h2 class="font-display text-4xl text-slate-900 dark:text-white font-bold">01. <span class="text-cyber-purple">DATA_LOG</span></h2>
+                    <span class="font-mono text-xs text-gray-500 mb-2">Bio & Skills</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                    <div class="holo-card p-8 rounded-lg group">
+                        <h3 class="font-display text-2xl text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                            <i class="fas fa-terminal text-cyber-cyan"></i> Bio.exe
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed font-light lang-text"
+                           data-es="Mi background como Analista Funcional me permite ver más allá del código. Entiendo el negocio, modelo los procesos y diseño la arquitectura técnica necesaria."
+                           data-en="My background as a Functional Analyst allows me to see beyond the code. I understand the business, model processes, and design the necessary technical architecture.">
+                            Mi background como Analista Funcional me permite ver más allá del código.
+                        </p>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed font-light lang-text"
+                           data-es="Actúo como el nodo conector entre los clientes no técnicos y el equipo de ingeniería."
+                           data-en="I act as the connecting node between customers non-technical and the engineering team.">
+                            Actúo como el nodo conector entre los clientes no técnicos y el equipo de ingeniería.
+                        </p>
+
+                        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-mono text-xs text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i class="fas fa-language text-lg"></i> <span class="lang-text" data-es="INGLÉS" data-en="ENGLISH">INGLÉS</span>
+                                </span>
+                                <span class="text-xs font-bold text-cyber-purple">B2 / C1</span>
+                            </div>
+                            <div class="w-full bg-gray-300 dark:bg-black h-2 rounded-full overflow-hidden">
+                                <div class="bg-cyber-purple h-full w-[85%] relative">
+                                    <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-1 lang-text" data-es="Nivel Intermedio - Avanzado (Profesional)" data-en="Intermediate - Advanced Level (Professional)">Nivel Intermedio - Avanzado</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="font-mono text-sm text-cyber-cyan mb-4">[SKILL_MODE_LOADED]</div>
+                        
+                        <div class="group">
+                            <div class="flex justify-between mb-1 font-mono text-xs text-gray-500 dark:text-gray-400">
+                                <span>ANÁLISIS & UML</span>
+                                <span class="text-cyber-cyan">98%</span>
+                            </div>
+                            <div class="h-1 w-full bg-gray-300 dark:bg-gray-800 relative overflow-hidden">
+                                <div class="h-full bg-cyber-cyan absolute top-0 left-0 w-[98%] shadow-[0_0_10px_#00F0FF]"></div>
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <div class="flex justify-between mb-1 font-mono text-xs text-gray-500 dark:text-gray-400">
+                                <span>PYTHON / JAVA</span>
+                                <span class="text-cyber-purple">90%</span>
+                            </div>
+                            <div class="h-1 w-full bg-gray-300 dark:bg-gray-800 relative overflow-hidden">
+                                <div class="h-full bg-cyber-purple absolute top-0 left-0 w-[90%] shadow-[0_0_10px_#7000FF]"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex flex-wrap gap-2">
+                            <span class="px-3 py-1 border border-gray-400 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-300 font-mono hover:border-cyber-cyan hover:text-cyber-cyan transition-colors cursor-crosshair">JavaScript</span>
+                            <span class="px-3 py-1 border border-gray-400 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-300 font-mono hover:border-cyber-cyan hover:text-cyber-cyan transition-colors cursor-crosshair">SQL</span>
+                            <span class="px-3 py-1 border border-gray-400 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-300 font-mono hover:border-cyber-cyan hover:text-cyber-cyan transition-colors cursor-crosshair">Docker</span>
+                            <span class="px-3 py-1 border border-gray-400 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-300 font-mono hover:border-cyber-cyan hover:text-cyber-cyan transition-colors cursor-crosshair">CSS</span>
+                            <span class="px-3 py-1 border border-gray-400 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-300 font-mono hover:border-cyber-cyan hover:text-cyber-cyan transition-colors cursor-crosshair">HTML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="py-24 bg-black/5 dark:bg-black/30">
+            <div class="container mx-auto px-6">
+                <div class="flex items-end gap-4 mb-16 border-b border-gray-300 dark:border-gray-800 pb-4">
+                    <h2 class="font-display text-4xl text-slate-900 dark:text-white font-bold">02. <span class="text-cyber-cyan">TIMELINE</span></h2>
+                </div>
+
+                <div class="relative max-w-3xl mx-auto">
+                    <div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-800 md:-translate-x-1/2"></div>
+                    
+                    <div class="relative mb-16 md:w-1/2 md:ml-auto md:pl-12 pl-8 group" data-aos="fade-left">
+                        <div class="absolute left-[-5px] md:left-[-5px] top-6 w-3 h-3 bg-white dark:bg-cyber-dark border border-cyber-cyan rounded-full z-10 group-hover:bg-cyber-cyan transition-colors shadow-[0_0_10px_#00F0FF]"></div>
+                        <div class="absolute left-0 top-[29px] w-8 h-px bg-cyber-cyan md:block hidden"></div>
+                        
+                        <div class="holo-card p-6 rounded border-l-2 border-l-cyber-cyan">
+                            <span class="font-mono text-xs text-cyber-cyan">2023 // ACTUALIDAD</span>
+                            <h3 class="font-display text-xl text-slate-900 dark:text-white mt-1 lang-text" data-es="Tecnicatura Superior en Análisis Funcional de Sistemas Informáticos" data-en="Higher Technical Degree in Functional Analysis of Information Systems Technologies">Tecnicatura Superior en Análisis Funcional de Sistemas Informáticos</h3>
+                            <p class="text-sm text-gray-500 mt-2">ISP4 - Reconquista</p>
+                        </div>
+                    </div>
+
+                    <div class="relative mb-16 md:w-1/2 md:mr-auto md:pr-12 pl-8 md:pl-0 md:text-right group" data-aos="fade-right">
+                         <div class="absolute left-[-5px] md:right-[-5px] md:left-auto top-6 w-3 h-3 bg-white dark:bg-cyber-dark border border-cyber-purple rounded-full z-10 group-hover:bg-cyber-purple transition-colors shadow-[0_0_10px_#7000FF]"></div>
+                        
+                        <div class="holo-card p-6 rounded border-l-2 md:border-l-0 md:border-r-2 border-cyber-purple">
+                            <span class="font-mono text-xs text-cyber-purple">2021 // CERTIFICACIÓN</span>
+                            <h3 class="font-display text-xl text-slate-900 dark:text-white mt-1">Secretariado Ejecutivo Contable</h3>
+                            <p class="text-sm text-gray-500 mt-2">Instituto de Computación Integral Reconquista</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="certificates" class="py-24 relative overflow-hidden">
+             <div class="container mx-auto px-6 relative z-10">
+                <div class="flex items-end gap-4 mb-16 border-b border-gray-300 dark:border-gray-800 pb-4">
+                    <h2 class="font-display text-4xl text-slate-900 dark:text-white font-bold">03. <span class="text-blue-500">CERTIFICADOS</span></h2>
+                    <span class="font-mono text-xs text-gray-500 mb-2">Documents</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="holo-card p-6 rounded group hover:border-cyber-cyan transition-colors cursor-pointer">
+                        <div class="flex justify-between items-start mb-4">
+                            <i class="fas fa-file-pdf text-4xl text-red-500 group-hover:scale-110 transition-transform"></i>
+                            <span class="px-2 py-1 text-[10px] font-mono border border-gray-600 text-gray-500 rounded uppercase">Coursera</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 dark:text-white mb-1">Coursera Excel</h4>
+                        <a href="./assets/CourseraExcel.pdf" target="_blank" class="text-xs text-cyber-cyan hover:underline mt-2 inline-block font-mono">
+                            <i class="fas fa-download mr-1"></i> PDF_DOWNLOAD
+                        </a>
+                    </div>
+
+                    <div class="holo-card p-6 rounded group hover:border-cyber-purple transition-colors cursor-pointer">
+                        <div class="flex justify-between items-start mb-4">
+                            <i class="fas fa-file-pdf text-4xl text-red-500 group-hover:scale-110 transition-transform"></i>
+                            <span class="px-2 py-1 text-[10px] font-mono border border-gray-600 text-gray-500 rounded uppercase">Coursera</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 dark:text-white mb-1">Coursera Google Forms</h4>
+                        <a href="./assets/CourseraFormulario.pdf" target="_blank" class="text-xs text-cyber-purple hover:underline mt-2 inline-block font-mono">
+                            <i class="fas fa-download mr-1"></i> PDF_DOWNLOAD
+                        </a>
+                    </div>
+
+                     <div class="holo-card p-6 rounded group hover:border-blue-500 transition-colors cursor-pointer">
+                        <div class="flex justify-between items-start mb-4">
+                            <i class="fas fa-file-pdf text-4xl text-red-500 group-hover:scale-110 transition-transform"></i>
+                            <span class="px-2 py-1 text-[10px] font-mono border border-gray-600 text-gray-500 rounded uppercase">UTN Reconquista</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 dark:text-white mb-1">1° Jornada de Programación</h4>
+                        <a href="./assets/CharlaPro.pdf" target="_blank" class="text-xs text-blue-500 hover:underline mt-2 inline-block font-mono">
+                            <i class="fas fa-download mr-1"></i> PDF_DOWNLOAD
+                        </a>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <section id="projects" class="py-24 relative overflow-hidden bg-black/5 dark:bg-transparent">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex items-end gap-4 mb-16 border-b border-gray-300 dark:border-gray-800 pb-4">
+                    <h2 class="font-display text-4xl text-slate-900 dark:text-white font-bold">04. <span class="text-slate-500 dark:text-white">PROJECTS</span></h2>
+                    <span class="font-mono text-xs text-gray-500 mb-2">Codebase</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <article class="holo-card group rounded-xl bg-white dark:bg-cyber-slate">
+                        <div class="h-48 relative overflow-hidden bg-gray-900 group">
+                            <img src="https://placehold.co/600x400/0f172a/00F0FF?text=INV+SYSTEM" alt="Python" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-display text-xl text-slate-900 dark:text-white mb-2 lang-text" data-es="Gestión Inventarios" data-en="Inventory Management">Gestión Inventarios</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 lang-text" 
+                               data-es="Sistema robusto para control de stock con lógica predictiva y reportes automatizados."
+                               data-en="Robust stock control system with predictive logic and automated reporting.">
+                                Sistema robusto para control de stock.
+                            </p>
+                            <div class="flex gap-2 mb-6 font-mono text-[10px] text-gray-500">
+                                <span class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">PYTHON</span>
+                                <span class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">MYSQL</span>
+                            </div>
+                            <a href="https://github.com/Lurdciano/inventapp" class="inline-block w-full text-center py-2 border border-gray-300 dark:border-gray-700 text-xs font-bold uppercase hover:bg-cyber-cyan hover:text-black transition-all">GIT_REPO</a>
+                        </div>
+                    </article>
+                    
+                    <article class="holo-card group rounded-xl bg-white dark:bg-cyber-slate">
+                        <div class="h-48 relative overflow-hidden bg-gray-900 group">
+                            <img src="https://placehold.co/600x400/0f172a/7000FF?text=JAVA+ERP" alt="Java" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-display text-xl text-slate-900 dark:text-white mb-2">Sistema Ventas POO</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 lang-text"
+                               data-es="Arquitectura empresarial en Java puro utilizando patrones de diseño y JDBC."
+                               data-en="Enterprise architecture in pure Java using design patterns and JDBC.">
+                               Arquitectura empresarial en Java puro.
+                            </p>
+                            <div class="flex gap-2 mb-6 font-mono text-[10px] text-gray-500">
+                                <span class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">JAVA</span>
+                                <span class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">SWING</span>
+                            </div>
+                            <a href="https://github.com/Lurdciano/Software-Metalur" class="inline-block w-full text-center py-2 border border-gray-300 dark:border-gray-700 text-xs font-bold uppercase hover:bg-cyber-purple hover:text-white transition-all">GIT_REPO</a>
+                        </div>
+                    </article>
+
+                    <article class="holo-card group rounded-xl bg-white dark:bg-cyber-slate">
+                        <div class="h-48 relative overflow-hidden bg-gray-900 group">
+                            <img src="https://placehold.co/600x400/0f172a/ffffff?text=WEB+APP" alt="Web" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-display text-xl text-slate-900 dark:text-white mb-2 lang-text" data-es="Facturación Web" data-en="Web Billing App">Facturación Web</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 lang-text"
+                               data-es="Plataforma web con generación de PDFs dinámicos y dashboard de analíticas."
+                               data-en="Web platform with dynamic PDF generation and analytics dashboard.">
+                               Plataforma web con generación de PDFs.
+                            </p>
+                            <div class="flex gap-2 mb-6 font-mono text-[10px] text-gray-500">
+                                <span class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">PHP</span>
+                                <span class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">JS</span>
+                            </div>
+                            <a href="https://github.com/Lurdciano/Software-Stenico" class="inline-block w-full text-center py-2 border border-gray-300 dark:border-gray-700 text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-all">GIT_REPO</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-24 relative">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <div class="flex items-end gap-4 mb-16 border-b border-gray-300 dark:border-gray-800 pb-4">
+                    <h2 class="font-display text-3xl text-slate-900 dark:text-white font-bold">05. <span class="text-white bg-black px-2">CONNECT</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a href="mailto:juanperez@gmail.com" class="holo-card p-4 flex items-center gap-4 hover:border-red-500 group transition-all">
+                                <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-sm text-slate-900 dark:text-white">Gmail</h5>
+                                    <span class="text-[10px] text-gray-500">lucianord1998@gmail.com</span>
+                                </div>
+                            </a>
+
+                            <a href="https://linkedin.com" target="_blank" class="holo-card p-4 flex items-center gap-4 hover:border-blue-600 group transition-all">
+                                <div class="w-10 h-10 rounded-full bg-blue-600/10 flex items-center justify-center text-blue-600">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-sm text-slate-900 dark:text-white">LinkedIn</h5>
+                                    <span class="text-[10px] text-gray-500">/in/lucianoruizdiaz</span>
+                                </div>
+                            </a>
+
+                            <a href="https://github.com" target="_blank" class="holo-card p-4 flex items-center gap-4 hover:border-purple-500 group transition-all">
+                                <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                    <i class="fab fa-github"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-sm text-slate-900 dark:text-white">GitHub</h5>
+                                    <span class="text-[10px] text-gray-500">/Lurdciano</span>
+                                </div>
+                            </a>
+
+                            <div class="holo-card p-4 flex items-center gap-4 border-cyber-cyan/30">
+                                <div class="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-sm text-slate-900 dark:text-white lang-text" data-es="Ubicación" data-en="Location">Ubicación</h5>
+                                    <span class="text-[10px] text-gray-500">Reconquista, Santa Fe, ARG</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="holo-card p-1 rounded-lg">
+                        <div class="bg-gray-100 dark:bg-cyber-dark p-6 md:p-8 rounded border border-gray-300 dark:border-gray-800">
+                            <div class="flex justify-between items-center mb-6 border-b border-gray-300 dark:border-gray-800 pb-2">
+                                <h2 class="font-display text-xl text-slate-900 dark:text-white lang-text" data-es="TRANSMISIÓN" data-en="TRANSMISSION">TRANSMISIÓN</h2>
+                                <div class="flex gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                </div>
+                            </div>
+                            
+                            <form onsubmit="event.preventDefault(); alert('Sent!');" class="space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-mono text-cyber-cyan uppercase">ID</label>
+                                    <input type="text" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="Name">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-mono text-cyber-cyan uppercase">MSG</label>
+                                    <textarea rows="3" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="Message content..."></textarea>
+                                </div>
+                                <button type="submit" class="w-full py-3 bg-cyber-cyan text-black font-bold font-display uppercase tracking-widest hover:bg-white transition-colors text-sm">
+                                    <span class="lang-text" data-es="ENVIAR" data-en="SEND">ENVIAR</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-8 px-4 text-right border-t border-gray-300 dark:border-gray-900 bg-gray-100 dark:bg-cyber-dark relative z-10">
+        <p class="font-mono text-xs text-gray-500">
+            SYSTEM.ROOT.USER: LUCIANO RUIZ DÍAZ &copy; 2025 <br>
+            <span class="text-cyber-cyan">END OF LINE.</span>
+        </p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+    <script>
+        // 1. CARGA Y PRELOADER
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            let progress = 0;
+            const bar = document.getElementById('loader-bar');
+            const txt = document.getElementById('loader-text');
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 1;
+                if(progress > 100) progress = 100;
+                bar.style.width = `${progress}%`;
+                txt.innerText = `${progress}%`;
+                if(progress === 100) clearInterval(interval);
+            }, 30);
+
+            tl.to("#preloader", { yPercent: -100, duration: 1, delay: 1, ease: "power4.inOut" })
+              .from(".fade-in-up", { y: 30, opacity: 0, duration: 1, stagger: 0.1, ease: "power3.out" }, "-=0.5")
+              .add(() => initScrambleText());
+        });
+
+        // 2. TEXT SCRAMBLE (Original)
+        function initScrambleText() {
+            const el = document.getElementById('scramble-text');
+            const phrases = ["ANALISTA FUNCIONAL", "SYSTEM ARCHITECT", "FULL STACK DEV"];
+            let phraseIdx = 0;
+            const chars = '!<>-_\\/[]{}—=+*^?#________';
+            
+            function setText(newText) {
+                const oldText = el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => resolve);
+                let queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(frameRequest);
+                frame = 0;
+                update(queue, resolve => {
+                    setTimeout(() => {
+                        phraseIdx = (phraseIdx + 1) % phrases.length;
+                        setText(phrases[phraseIdx]);
+                    }, 3000);
+                });
+            }
+            let frameRequest;
+            let frame = 0;
+            function update(queue, onComplete) {
+                let output = '';
+                let complete = 0;
+                for (let i = 0, n = queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = queue[i];
+                    if (frame >= end) { complete++; output += to; }
+                    else if (frame >= start) {
+                        if (!char || Math.random() < 0.28) { char = chars[Math.floor(Math.random() * chars.length)]; queue[i].char = char; }
+                        output += `<span class="text-gray-400">${char}</span>`;
+                    } else { output += from; }
+                }
+                el.innerHTML = output;
+                if (complete === queue.length) { onComplete(); }
+                else { frameRequest = requestAnimationFrame(() => update(queue, onComplete)); frame++; }
+            }
+            setText(phrases[0]);
+        }
+
+        // 3. CURSOR & INTERACTION
+        const cursor = document.getElementById('cursor');
+        const follower = document.getElementById('cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            if(window.innerWidth > 768) {
+                cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+                gsap.to(follower, { x: e.clientX, y: e.clientY, duration: 0.2 });
+            }
+        });
+
+        // 4. GSAP SCROLL & TILT
+        gsap.registerPlugin(ScrollTrigger);
+        document.querySelectorAll('section').forEach(section => {
+            gsap.from(section.children, {
+                scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reverse" },
+                y: 50, opacity: 0, duration: 0.8, stagger: 0.2
+            });
+        });
+        
+        VanillaTilt.init(document.querySelectorAll(".tilt-card, .holo-card"), {
+            max: 5, speed: 400, glare: true, "max-glare": 0.2, gyroscope: false
+        });
+
+        // 5. NUEVAS FUNCIONES: IDIOMA Y TEMA
+        let currentLang = 'es';
+        function toggleLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            document.getElementById('lang-indicator').innerText = currentLang.toUpperCase();
+            document.querySelectorAll('.lang-text').forEach(el => {
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    el.innerText = el.getAttribute(`data-${currentLang}`);
+                    el.style.opacity = 1;
+                }, 200);
+            });
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            
+            // Actualizar Partículas
+            if(window.pJSDom && window.pJSDom.length > 0) {
+                window.pJSDom[0].pJS.particles.color.value = isDark ? '#ffffff' : '#000000';
+                window.pJSDom[0].pJS.particles.line_linked.color = isDark ? '#00F0FF' : '#000000';
+                window.pJSDom[0].pJS.fn.particlesRefresh();
+            }
+        }
+
+        // 6. PARTICLES (Configuración Inicial)
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.2 },
+                "size": { "value": 2 },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00F0FF", "opacity": 0.1, "width": 1 },
+                "move": { "enable": true, "speed": 0.5 }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "grab" } }
+            },
+            "retina_detect": true
+        });
+    </script>
+</body>
+</html>
