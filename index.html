@@ -492,14 +492,17 @@
                                 </div>
                             </div>
                             
-                            <form onsubmit="event.preventDefault(); alert('Sent!');" class="space-y-4">
+                            <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
+                                <input type="hidden" name="access_key" value="bd29a47b-daf2-4d97-aca3-ff618d786848">
+                                <input type="hidden" name="subject" value="Nuevo mensaje desde Portfolio">
+                                
                                 <div>
-                                    <label class="text-[10px] font-mono text-cyber-cyan uppercase">ID</label>
-                                    <input type="text" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="Name">
+                                    <label class="text-[10px] font-mono text-cyber-cyan uppercase">EMAIL</label>
+                                    <input type="email" name="email" required class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="tu@email.com">
                                 </div>
                                 <div>
                                     <label class="text-[10px] font-mono text-cyber-cyan uppercase">MSG</label>
-                                    <textarea rows="3" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="Message content..."></textarea>
+                                    <textarea rows="3" name="message" required class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="Mensaje..."></textarea>
                                 </div>
                                 <button type="submit" class="w-full py-3 bg-cyber-cyan text-black font-bold font-display uppercase tracking-widest hover:bg-white transition-colors text-sm">
                                     <span class="lang-text" data-es="ENVIAR" data-en="SEND">ENVIAR</span>
