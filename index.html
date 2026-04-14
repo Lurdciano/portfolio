@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luciano Ruiz Diaz | Portfolio</title>
     
+    <!-- Security Headers (granular and secure) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.web3forms.com; frame-src 'none'; object-src 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="./icono.ico">
     <link rel="shortcut icon" href="./icono.ico">
@@ -205,9 +212,9 @@
 
                 <div class="order-1 lg:order-2 flex justify-center perspective-container fade-in-up">
                     <div class="tilt-card relative w-72 h-72 md:w-96 md:h-96 group">
-                        <div class="absolute inset-0 rounded-full border border-cyber-cyan/20 animate-[spin_10s_linear_infinite]"></div>
-                        <div class="absolute inset-4 rounded-full border border-dashed border-cyber-purple/40 animate-[spin_15s_linear_infinite_reverse]"></div>
-                        <div class="absolute inset-0 bg-cyber-slate clip-hexagon flex items-center justify-center overflow-hidden border-2 border-gray-800 transition-all duration-500 group-hover:border-cyber-cyan">
+                        <div class="absolute inset-0 rounded-full border border-cyber-cyan/20 animate-spin-slow"></div>
+                        <div class="absolute inset-4 rounded-full border border-dashed border-cyber-purple/40 animate-spin-slow"></div>
+                        <div class="absolute inset-0 bg-cyber-slate rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-800 transition-all duration-500 group-hover:border-cyber-cyan">
                             <div class="absolute inset-0 bg-cyber-cyan/10 mix-blend-overlay z-10"></div>
                             <img src="./assets/Avatar.png" alt="Avatar" class="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500">
                         </div>
@@ -397,7 +404,7 @@
                     
                     <article class="holo-card group rounded-xl bg-white dark:bg-cyber-slate">
                         <div class="h-48 relative overflow-hidden bg-gray-900 group">
-                            <video src="assets/DL.mp4" alt="Java" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100 autoplay muted loop controls">
+                            <video src="assets/DL.mp4" alt="Java" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100" autoplay muted loop controls></video>
                         </div>
                         <div class="p-6">
                             <h3 class="font-display text-xl text-slate-900 dark:text-white mb-2">Gestión de ingresos, stock, balance y facturación</h3>
@@ -454,7 +461,9 @@
                                 </div>
                                 <div>
                                     <h5 class="font-bold text-sm text-slate-900 dark:text-white">Gmail</h5>
-                                    <span class="text-[10px] text-gray-500">lucianord1998@gmail.com</span>
+                                    <span id="protected-email" class="text-[10px] text-gray-500 cursor-pointer hover:text-cyber-cyan" onclick="revealEmail()">
+                                        <i class="fas fa-envelope"></i> [Mostrar Email]
+                                    </span>
                                 </div>
                             </a>
 
@@ -490,38 +499,59 @@
                         </div>
                     </div>
 
-                    <div class="holo-card p-1 rounded-lg">
-                        <div class="bg-gray-100 dark:bg-cyber-dark p-6 md:p-8 rounded border border-gray-300 dark:border-gray-800">
-                            <div class="flex justify-between items-center mb-6 border-b border-gray-300 dark:border-gray-800 pb-2">
-                                <h2 class="font-display text-xl text-slate-900 dark:text-white lang-text" data-es="TRANSMISIÓN" data-en="TRANSMISSION">TRANSMISIÓN</h2>
-                                <div class="flex gap-2">
-                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div class="space-y-4">
+                        <!-- GitHub Stats -->
+                        <div class="holo-card p-4 border-cyber-purple/30 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                <i class="fab fa-github text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-sm text-slate-900 dark:text-white">GitHub Activity</h5>
+                                <div class="grid grid-cols-3 gap-2 text-center mt-2">
+                                    <div>
+                                        <div class="text-lg font-bold text-cyber-purple">12</div>
+                                        <div class="text-[9px] text-gray-500">Repos</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-lg font-bold text-cyber-cyan">247</div>
+                                        <div class="text-[9px] text-gray-500">Commits</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-lg font-bold text-green-500">89</div>
+                                        <div class="text-[9px] text-gray-500">Stars</div>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
-                                <input type="hidden" name="access_key" value="bd29a47b-daf2-4d97-aca3-ff618d786848">
-                                <input type="hidden" name="subject" value="Nuevo mensaje desde Portfolio">
-                                
-                                <div>
-                                    <label class="text-[10px] font-mono text-cyber-cyan uppercase">EMAIL</label>
-                                    <input type="email" name="email" required class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="tu@email.com">
+                        </div>
+
+                        <!-- Horario de Contacto -->
+                        <div class="holo-card p-4 border-cyber-cyan/30 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-cyber-cyan/10 flex items-center justify-center text-cyber-cyan">
+                                <i class="fas fa-clock text-sm"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-sm text-slate-900 dark:text-white lang-text" data-es="Horario de Contacto" data-en="Contact Hours">Horario de Contacto</h5>
+                                <div class="space-y-1 mt-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-gray-500">Lun - Vie</span>
+                                        <span class="text-[10px] font-mono text-cyber-cyan">9:00 - 18:00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-gray-500">Respuesta</span>
+                                        <span class="text-[10px] font-mono text-green-500">24-48hs</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] text-gray-500">Zona</span>
+                                        <span class="text-[10px] font-mono text-orange-500">GMT-3</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-[10px] font-mono text-cyber-cyan uppercase">MSG</label>
-                                    <textarea rows="3" name="message" required class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-slate-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:border-cyber-cyan font-mono" placeholder="Mensaje..."></textarea>
-                                </div>
-                                <button type="submit" class="w-full py-3 bg-cyber-cyan text-black font-bold font-display uppercase tracking-widest hover:bg-white transition-colors text-sm">
-                                    <span class="lang-text" data-es="ENVIAR" data-en="SEND">ENVIAR</span>
-                                </button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
 
     <footer class="py-8 px-4 text-right border-t border-gray-300 dark:border-gray-900 bg-gray-100 dark:bg-cyber-dark relative z-10">
@@ -672,6 +702,22 @@
             },
             "retina_detect": true
         });
+
+        // 7. PROTECCIÓN DE EMAIL
+        function revealEmail() {
+            const emailElement = document.getElementById('protected-email');
+            const email = 'lucianord1998' + String.fromCharCode(64) + 'gmail' + String.fromCharCode(46) + 'com';
+            
+            emailElement.innerHTML = email;
+            emailElement.onclick = function() {
+                navigator.clipboard.writeText(email);
+                emailElement.innerHTML = '<i class="fas fa-check"></i> ¡Email copiado!';
+                setTimeout(() => {
+                    emailElement.innerHTML = '<i class="fas fa-envelope"></i> [Mostrar Email]';
+                    emailElement.onclick = revealEmail;
+                }, 2000);
+            };
+        }
     </script>
 </body>
 </html>
